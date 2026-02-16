@@ -1,0 +1,53 @@
+const pool = require("../pool");
+
+class clientRepository {
+  static async findAll() {
+    const result = await pool.query(
+      `SELECT *
+            FROM clients
+            ORDER BY client_id`,
+    );
+    return result.rows;
+  }
+  static async findById(id) {
+    const result = await pool.query(
+      `SELECT *
+            FROM clients
+            WHERE client_id=$1`,
+      [id],
+    );
+    return result.rows[0];
+  }
+
+  static async create({ name, email }) {
+    const result = await pool.query(
+      `INSERT INTO clients
+        (client_name,client_email)
+        values($1,$2) RETURNING *`,
+      [name, email],
+    );
+    return result.rows[0];
+  }
+
+  static async update(id, { name, email }) {
+    const result = await pool.query(
+      `UPDATE clients
+        SET client_name=$1,client_email=$2
+        WHERE client_id=$3 RETURNING *`,
+      [name, email, id],
+    );
+    return result.rows[0];
+  }
+
+  static async delete(id) {
+    const result = await pool.query(
+      `DELETE
+        FROM clients
+        WHERE client_id=$1`,
+      [id],
+    );
+    return "deleted successduly";
+  }
+}
+
+module.exports = clientRepository;
