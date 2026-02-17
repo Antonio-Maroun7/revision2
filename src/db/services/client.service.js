@@ -21,18 +21,18 @@ class clientService {
     return await clientRepository.create(data);
   }
 
-  static async updateClient(data) {
-    if (!data.id || !data.name || !data.email) {
+  static async updateClient(id, data) {
+    if (!id || !data.name || !data.email) {
       throw new Error("id name and email are required");
     }
-    return clientRepository.update(data);
+    return await clientRepository.update(id, data);
   }
 
   static async deleteClient(id) {
     if (!id) {
       throw new Error("id is required");
     }
-    const client = await clientRepository.getById(id);
+    const client = await clientRepository.findById(id);
     if (!client) {
       throw new Error("client not found");
     }
